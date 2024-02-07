@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .container {
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        input[type="file"] {
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        input[type="text"] {
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Log Analyzer</h1>
+        <input type="file" id="fileInput" accept=".Log">
+        <input type="text" id="searchInput" placeholder="Enter search word">
+        <button onclick="uploadFile()">Upload</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            const searchWord = document.getElementById('searchInput').value.toLowerCase();
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(event) {
+                    const fileContent = event.target.result;
+                    const lines = fileContent.split('\n');
+                    const filteredLines = lines.filter(line => line.toLowerCase().includes(searchWord));
+                    const resultDiv = document.getElementById('result');
+                    resultDiv.innerHTML = '';
+                    if (filteredLines.length === 0) {
+                        const p = document.createElement('p');
+                        p.textContent = 'Log not found';
+                        resultDiv.appendChild(p);
+                    } else {
+                        filteredLines.forEach(line => {
+                            const p = document.createElement('p');
+                            p.textContent = line;
+                            resultDiv.appendChild(p);
+                        });
+                    }
+                };
+
+                reader.readAsText(file);
+            } else {
+                console.error('No file selected.');
+            }
+        }
+    </script>
+</body>
+</html>
